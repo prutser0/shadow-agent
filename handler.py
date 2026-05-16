@@ -93,7 +93,7 @@ def _setup_ollama() -> None:
                 _log(f"GGUF not in volume — downloading {MODEL_REPO} (~24GB, one-time)")
                 target = os.path.join(MODELS_DIR, "_gguf")
                 _shell(
-                    f'huggingface-cli download "{MODEL_REPO}" '
+                    f'hf download "{MODEL_REPO}" '
                     f'--include "{MODEL_PATTERN}" --local-dir "{target}"',
                     timeout=1800,
                 )

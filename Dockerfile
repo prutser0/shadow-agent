@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV OLLAMA_HOST=0.0.0.0:11434 \
     OLLAMA_MODELS=/workspace/models \
     HF_HOME=/workspace/hf-cache \
-    HF_HUB_ENABLE_HF_TRANSFER=1 \
+    HF_XET_HIGH_PERFORMANCE=1 \
     MODEL_REPO=DavidAU/Qwen3.6-40B-Claude-4.6-Opus-Deckard-Heretic-Uncensored-Thinking-NEO-CODE-Di-IMatrix-MAX-GGUF \
     MODEL_PATTERN=*Q4_K_M*.gguf \
     MODEL_TAG=deckard-40b \
