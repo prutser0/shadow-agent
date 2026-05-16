@@ -1,6 +1,6 @@
 # shadow-agent
 
-Stateless LLM endpoint for delegation from hermes-agents (Lies, Zina) when their primary model refuses legitimate business automation tasks.
+Stateless LLM endpoint for delegation from hermes-agents, when their primary model refuses legitimate business automation tasks.
 
 ## Stack
 
