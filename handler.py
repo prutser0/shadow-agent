@@ -32,8 +32,20 @@ def _log(msg: str) -> None:
 
 
 def _shell(cmd: str, check: bool = True, timeout: int | None = None) -> subprocess.CompletedProcess:
-    return subprocess.run(cmd, shell=True, check=check, timeout=timeout,
-                          capture_output=True, text=True)
+    _log(f"$ {cmd}")
+    result = subprocess.run(cmd, shell=True, timeout=timeout,
+                            capture_output=True, text=True)
+    if result.stdout:
+        _log(f"stdout: {result.stdout[-500:]}")
+    if result.stderr:
+        _log(f"stderr: {result.stderr[-500:]}")
+    if check and result.returncode != 0:
+        raise RuntimeError(
+            f"cmd failed (exit {result.returncode}): {cmd}\n"
+            f"stderr: {result.stderr[-1000:]}\n"
+            f"stdout: {result.stdout[-500:]}"
+        )
+    return result
 
 
 def _ollama_alive() -> bool:
