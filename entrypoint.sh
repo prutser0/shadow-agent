@@ -3,7 +3,7 @@ set -e
 
 mkdir -p "$OLLAMA_MODELS" "$HF_HOME"
 
-# Start ollama in background to enable model creation
+# Start ollama in background
 ollama serve &
 OLLAMA_PID=$!
 
@@ -16,11 +16,10 @@ done
 if ! ollama list 2>/dev/null | grep -q "^${MODEL_TAG}"; then
     echo "[entrypoint] Model ${MODEL_TAG} not found, importing..."
 
-    # Find existing GGUF in volume or download
     GGUF_PATH=$(find "$OLLAMA_MODELS" -maxdepth 3 -name "*Q4_K_M*.gguf" 2>/dev/null | head -1)
 
     if [ -z "$GGUF_PATH" ]; then
-        echo "[entrypoint] GGUF not in volume — downloading from HF (~24GB, this is one-time)..."
+        echo "[entrypoint] GGUF not in volume — downloading from HF (~24GB, one-time)..."
         huggingface-cli download "$MODEL_REPO" \
             --include "$MODEL_PATTERN" \
             --local-dir "$OLLAMA_MODELS/_gguf"
@@ -40,5 +39,11 @@ else
     echo "[entrypoint] Model ${MODEL_TAG} already loaded"
 fi
 
-# Foreground: wait on Ollama server
-wait $OLLAMA_PID
+# Pre-warm the model so first user request is fast
+echo "[entrypoint] Pre-warming model..."
+curl -sS -X POST http://localhost:11434/api/generate \
+    -d "{\"model\":\"${MODEL_TAG}\",\"prompt\":\"hi\",\"stream\":false}" > /dev/null || true
+
+# Start RunPod handler (foreground)
+echo "[entrypoint] Starting RunPod handler"
+exec python3 /opt/handler.py
