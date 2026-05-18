@@ -20,7 +20,7 @@ TEMPLATE """{{- if .Messages }}
 {{ end }}"""
 
 PARAMETER num_ctx 16384
-PARAMETER num_predict 4096
+PARAMETER num_predict 8192
 PARAMETER temperature 0.7
 PARAMETER top_p 0.95
 PARAMETER repeat_penalty 1.05
